@@ -1,14 +1,32 @@
 {
-  "name": "rasphome",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "name": "south",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www",
+    "test": "mocha"
   },
-  "author": "Alexsander Nogueira",
-  "license": "ISC",
   "dependencies": {
-    "rpio": "^2.1.1"
+    "bcrypt": "^3.0.7",
+    "connect-mongo": "^3.1.2",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv-safe": "^8.2.0",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.17.0",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.12",
+    "morgan": "~1.9.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "supertest": "^4.0.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "request": "^2.88.0",
+    "should": "^13.2.3"
   }
 }

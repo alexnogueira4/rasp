@@ -1,6 +1,7 @@
 {
-  "name": "south",
-  "version": "0.0.0",
+  "name": "rasphome",
+  "version": "0.0.1",
+  "author": "Alexsander Nogueira",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
@@ -22,6 +23,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "rpio": "^2.1.1",
     "supertest": "^4.0.2"
   },
   "devDependencies": {

@@ -1,10 +1,13 @@
 import * as firebase from "firebase/app"
 import "firebase/auth"
 import "firebase/firestore"
-import { FIRESTORE_CONFIG } from './interfaces'
+import { FIRESTORE_CONFIG } from './model'
 
 class Firestore {
   config:FIRESTORE_CONFIG
+  protected firebase = firebase
+  protected firestore = firebase.firestore
+
   constructor() {
     this.config = {
       apiKey: process.env.FIRESTORE_API_KEY,
@@ -18,9 +21,9 @@ class Firestore {
     }
   }
 
-  connect() {
-    firebase.initializeApp(this.config);
-    return firebase.firestore()
+  connect () {
+    this.firebase.initializeApp(this.config);
+    return this.firebase.firestore()
   }
 }
 

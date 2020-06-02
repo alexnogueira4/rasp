@@ -8,7 +8,6 @@ class Routes {
 
 	constructor (app:any, controller: Controller) {
 		this.App = app;
-		// this.Router = router
 		this.Controller = controller
 	}
 

@@ -9,15 +9,16 @@ class Firestore {
   protected firestore = firebase.firestore
 
   constructor() {
+    
     this.config = {
-      apiKey: process.env.FIRESTORE_API_KEY,
-      authDomain: process.env.FIRESTORE_AUTH_DOMAIN,
-      databaseURL: process.env.FIRESTORE_DATABASE_URL,
-      projectId: process.env.FIRESTORE_PROJECT_ID,
-      storageBucket: process.env.FIRESTORE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIRESTORE_MESSAGING_SENSER_ID,
-      appId: process.env.FIRESTORE_APP_ID,
-      measurementId: process.env.FIRESTORE_MEASUREMENT_ID
+      apiKey: 'AIzaSyC9lr6hq6S6Z_U-eVFCIsk8CpiRXB9ntPY',
+      authDomain: 'midyear-machine-237222.firebaseapp.com',
+      databaseURL: 'https://midyear-machine-237222.firebaseio.com',
+      projectId: 'midyear-machine-237222',
+      storageBucket: 'midyear-machine-237222.appspot.com',
+      messagingSenderId: '627837662753',
+      appId: '1:627837662753:web:fd1c7db9586cf011a95560',
+      measurementId: 'G-6NX0HBR146'
     }
   }
 

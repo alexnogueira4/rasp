@@ -19,4 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 server.start(app, rooms, database, () => { console.log('Started rooms') })
 server.start(app, eletronics, database, () => { console.log('Started eletronic') })
 
-app.listen(process.env.PORT, () => {})
+app.listen(process.env.PORT, () => {
+  console.log('teste funcional, porta: ', process.env.PORT);
+  
+})

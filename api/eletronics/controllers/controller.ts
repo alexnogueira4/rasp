@@ -1,9 +1,16 @@
-import IRoom from '../model/rooms'
+import IEletronics from '../model/eletronics'
+import gpio from 'rpi-gpio'
 
-class Controller implements IRoom {
+class Controller implements IEletronics {
 	id?: string;
-	name = '';
-	collection = 'rooms'
+	GPIO: number;
+	frequency: string;
+	potentiometer: string;
+	radio: boolean;
+	switch: boolean
+	voltage: string;
+	watts: string;
+	collection = 'eletronics'
 	protected database: any;
 	protected ISnapshot: any;
 
@@ -24,36 +31,57 @@ class Controller implements IRoom {
 					});
 					res.send(results)
 				})
+		// let ttt = this.s
 		this.database
 			.onSnapshot(querySnapshot => {
 				querySnapshot.docChanges().forEach(change => {
 					console.log(change);
+					if (change.type === 'modified') {
+						console.log('Modified eletronic: ', change.doc.data());
+						this.switchState(change.doc.data())
+					}
 				});
 			});
 				
 	}
 
 	public set(req:any, res:any) {
-		let room: IRoom = { name: req.body.name }
+		let eletronic: IEletronics = { 
+			GPIO: req.body.GPIO,
+			frequency: req.body.frequency,
+			potentiometer: req.body.potentiometer,
+			radio: req.body.radio,
+			switch: req.body.switch,
+			voltage: req.body.voltage,
+			watts: req.body.watts
+		}
 
 		this.database
 				.doc()
-				.set(room)
+				.set(eletronic)
 				.then(() => {
 					res.json({
 						status: "Data saved successfully.",
-						data: room
+						data: eletronic
 					});
 				})
 				.catch(error => {
 					res.send("Data could not be saved." + error);
 				})
 	}
+	private switchState (eletronic: IEletronics | any) {
+		gpio.setup(eletronic.GPIO, gpio.DIR_OUT, (err)=>{
+			gpio.write(eletronic.GPIO, !eletronic.switch, function(err) {
+				console.log(`PIN ${eletronic.GPIO} is ${!eletronic.switch ? 'on' : 'off'} now`);
+			});		
+		});
+
+	}
 	
 	public get(req: any, res: any): void {
-		const { roomId } = req.params
+		const { eletronicId } = req.params
 		
-		this.database.doc(roomId)
+		this.database.doc(eletronicId)
 				.get()
 				.then((snapshot: any) => {
 					res.send(snapshot.data())
@@ -64,10 +92,10 @@ class Controller implements IRoom {
 	}
 
 	public delete(req: any, res: any): boolean {
-		let { roomId } = req.params
+		let { eletronicId } = req.params
 		
 		this.database
-				.doc(roomId)
+				.doc(eletronicId)
 				.delete()
 				.then(()=>{
 					res.send("Data deleted successfully.");

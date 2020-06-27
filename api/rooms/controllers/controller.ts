@@ -9,6 +9,7 @@ class Controller implements IRoom {
 
 	constructor(database: any) {
 		this.database = database.collection(this.collection)
+		this.getAll('','')
 	}
 
 	public getAll(req: any, res: any): void {
@@ -22,7 +23,11 @@ class Controller implements IRoom {
 							...doc.data()
 						});
 					});
-					res.send(results)
+					if (!res){
+						console.log('Rooms services initialized!')
+					} else {
+						res.send(results)
+					}
 				})
 		this.database
 			.onSnapshot(querySnapshot => {

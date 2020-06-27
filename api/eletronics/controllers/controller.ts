@@ -16,6 +16,7 @@ class Controller implements IEletronics {
 
 	constructor(database: any) {
 		this.database = database.collection(this.collection)
+		this.getAll('','')
 	}
 
 	public getAll(req: any, res: any): void {
@@ -29,9 +30,13 @@ class Controller implements IEletronics {
 							...doc.data()
 						});
 					});
-					res.send(results)
+					if (!res){
+						console.log('Eletronics services initialized!')
+					} else {
+						res.send(results)
+					}
 				})
-		// let ttt = this.s
+
 		this.database
 			.onSnapshot(querySnapshot => {
 				querySnapshot.docChanges().forEach(change => {
@@ -43,6 +48,15 @@ class Controller implements IEletronics {
 				});
 			});
 				
+	}
+
+	private switchState (eletronic: IEletronics | any) {
+		gpio.setup(eletronic.GPIO, gpio.DIR_OUT, (err)=>{
+			gpio.write(eletronic.GPIO, eletronic.switch, function(err) {
+				console.log(`PIN ${eletronic.GPIO} is ${eletronic.switch ? 'on' : 'off'} now`);
+			});		
+		});
+
 	}
 
 	public set(req:any, res:any) {
@@ -68,14 +82,6 @@ class Controller implements IEletronics {
 				.catch(error => {
 					res.send("Data could not be saved." + error);
 				})
-	}
-	private switchState (eletronic: IEletronics | any) {
-		gpio.setup(eletronic.GPIO, gpio.DIR_OUT, (err)=>{
-			gpio.write(eletronic.GPIO, !eletronic.switch, function(err) {
-				console.log(`PIN ${eletronic.GPIO} is ${!eletronic.switch ? 'on' : 'off'} now`);
-			});		
-		});
-
 	}
 	
 	public get(req: any, res: any): void {

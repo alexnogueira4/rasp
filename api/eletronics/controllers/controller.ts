@@ -52,7 +52,7 @@ class Controller implements IEletronics {
 
 	private switchState (eletronic: IEletronics | any) {
 		gpio.setup(eletronic.GPIO, gpio.DIR_OUT, (err)=>{
-			gpio.write(eletronic.GPIO, eletronic.switch, function(err) {
+			gpio.write(eletronic.GPIO, !eletronic.switch, function(err) {
 				console.log(`PIN ${eletronic.GPIO} is ${eletronic.switch ? 'on' : 'off'} now`);
 			});		
 		});

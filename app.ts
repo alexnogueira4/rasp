@@ -1,22 +1,29 @@
 let videoStitch = require('video-stitch');
 
-let videoMerge = videoStitch.merge;
+let videoConcat = videoStitch.concat;
 
-videoMerge({
-  // ffmpeg_path: <path-to-ffmpeg> Optional. Otherwise it will just use ffmpeg on your $PATH
-})
-  .original({
-    "fileName": "teste",
-    "duration": "00:01:00"
-  })
+videoConcat(
+//   {
+//   ffmpeg_path: ffmpeg
+// }
+)
+  // .original({
+  //   "fileName": "teste",
+  //   "duration": "00:01:00"
+  // })
   .clips([
     {
-      "startTime": "00:01:05",
-      "fileName": "teste",
-      "duration": "00:00:10"
-    }
+      "fileName": "teste.mp4",
+    },
+    {
+      "fileName": "teste.mp4",
+    },
   ])
-  .merge()
+  .output("myfilename.mp4")
+  .concat()
+  .then(name=>{
+    console.log(name)
+  })
 //   .then((outputFile) => {
 //     console.log('path to output file', outputFile);
 //   });

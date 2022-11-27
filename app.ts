@@ -9,13 +9,13 @@ videoMerge({
     "fileName": "teste",
     "duration": "00:01:00"
   })
-//   .clips([
-//     {
-//       "startTime": "00:01:05",
-//       "fileName": "teste",
-//       "duration": "00:10:00"
-//     }
-//   ])
+  .clips([
+    {
+      "startTime": "00:01:05",
+      "fileName": "teste",
+      "duration": "00:00:10"
+    }
+  ])
   .merge()
 //   .then((outputFile) => {
 //     console.log('path to output file', outputFile);

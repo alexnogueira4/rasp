@@ -2,28 +2,33 @@ let videoStitch = require('video-stitch');
 
 let videoConcat = videoStitch.concat;
 
-videoConcat(
-//   {
-//   ffmpeg_path: ffmpeg
-// }
-)
-  // .original({
-  //   "fileName": "teste",
-  //   "duration": "00:01:00"
-  // })
-  .clips([
-    {
-      "fileName": "teste.mp4",
-    },
-    {
-      "fileName": "teste.mp4",
-    },
-  ])
-  .output("myfilename.mp4")
-  .concat()
-  .then(name=>{
-    console.log(name)
-  })
+try {
+  
+  videoConcat(
+    //   {
+      //   ffmpeg_path: ffmpeg
+      // }
+      )
+      // .original({
+        //   "fileName": "teste",
+        //   "duration": "00:01:00"
+        // })
+        .clips([
+          {
+            "fileName": "teste.mp4",
+          },
+          {
+            "fileName": "teste.mp4",
+          },
+        ])
+        .output("myfilename.mp4")
+        .concat()
+        .then(name=>{
+          console.log(name)
+        })
+      } catch (error) {
+        console.log("errrroooou", error)
+      }
 //   .then((outputFile) => {
 //     console.log('path to output file', outputFile);
 //   });

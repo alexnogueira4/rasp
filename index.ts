@@ -1,38 +1,68 @@
-let videoStitch = require('video-stitch');
+import "./config/env"
+import Client from './clients/chromecast/client'
+import Database from './config/database'
+import Entertainment from './api/entertainment'
+console.log(new Entertainment())
+// var teste = new Client()
 
-let videoConcat = videoStitch.concat;
+// //   var mediaURL = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/big_buck_bunny_1080p.mp4';
+// //   device.play(mediaURL, {startTime: 120}, function (err) {
+// //     if (!err) console.log('Playing in your chromecast')
+// //     console.log("err", err)
+// //   })
+// //   if (device && device.getStatus) {
+// //     device.getStatus((a)=>{
+// //       console.log("===",a)
+// //     })
 
-try {
-  
-  videoConcat(
-    //   {
-      //   ffmpeg_path: ffmpeg
-      // }
-      )
-      // .original({
-        //   "fileName": "teste",
-        //   "duration": "00:01:00"
-        // })
-        .clips([
-          {
-            "fileName": "teste.mp4",
-          },
-          {
-            "fileName": "teste.mp4",
-          },
-        ])
-        .output("myfilename.mp4")
-        .concat()
-        .then(name=>{
-          console.log(name)
-        })
-      } catch (error) {
-        console.log("errrroooou", error)
-      }
-//   .then((outputFile) => {
-//     console.log('path to output file', outputFile);
-//   });
 
+// teste.on('device', (device)=>{
+//   // consultar DB para ver lista de programacao e streamings
+//   // DB deve ter uma tabela PROGRAMACAO com as seguintes colunas:
+//   // - nome de arquivo, ou link para streaming
+//   // - horario de inicio e fim
+//   // - dias que deve passar o programa
+//   // - se ja passou ou nao o programa
+//   // TABELA scheduleGrid
+//   // id, name, file, startTime, endTime, days, channel
+//   // TABELA days
+//   // id, name (weekdays, weekend, saturday, sunday)
+//   // TABELA cartoons
+//   // id, name, episode, link, duration, hasEdit
+//   // TABELA video
+//   // id, name, link, date
+//   // TABELA channel
+//   // id, name, channel
+
+//   console.log('\n\nentrou no onDevice', device)
+//   var mediaURL = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/big_buck_bunny_1080p.mp4';
+//   device.play(mediaURL, {startTime: 120}, function (err) {
+//     if (!err) console.log('Playing in your chromecast')
+//     console.log("err", err)
+//   })
+//   if (device && device.getStatus) {
+//     // device.getStatus((a)=>{
+//     //   console.log("===",a)
+//     // })
+//   }
+
+
+// })
+
+// console.log("---> ", new Promise(async res => {
+//   var rr = await teste.getDevices()
+//   // var tt = await rr[0].getStatus((a)=>{
+//   //   console.log('deu erro ', a)
+//   // })
+//   // console.log("aquiiii", rr)
+//   return rr[0]
+// }
+//   ))
+// if (!teste.devices || !teste.devices.length) {
+  // setInterval(()=>{
+  //   // console.log("de novo.... ", teste.devices)
+  // }, 1000)
+// }
 // import "./config/env"
 // import Database from './config/database'
 // import server from './server/server'
@@ -42,7 +72,7 @@ try {
 // import morgan from 'morgan'
 // import helmet from 'helmet'
 // import bodyParser from 'body-parser'
-// // import device from './device'
+// import device from './device'
 
 // const ChromecastAPI = require('chromecast-api')
 // const client = new ChromecastAPI()
@@ -51,7 +81,7 @@ try {
 //     fs = require('fs'),
 //     util = require('util');
 
-//     // console.log(device)
+    // console.log(device)
 // // http.createServer(function (req, res) {
 // //   var path = 'manha_2022_11_21.mp4';
 // //   // var path = 'teste.mp4';

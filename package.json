@@ -33,7 +33,6 @@
     "mime": "^3.0.0",
     "morgan": "^1.10.0",
     "multicast-dns": "^7.2.5",
-    "node": "^19.2.0",
     "rpi-gpio": "^2.1.7",
     "supertest": "^4.0.2",
     "ts-jest": "^26.0.0",

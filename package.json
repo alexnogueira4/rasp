@@ -39,6 +39,7 @@
     "video-stitch": "^1.7.1"
   },
   "devDependencies": {
+    "@types/node": "^18.11.17",
     "chai": "^4.2.0",
     "nodemon": "^2.0.20",
     "request": "^2.88.2",

@@ -44,7 +44,7 @@ export default class MediaServer {
   start () {
     this.server
       .createServer(this.createServer.bind(this))
-      .listen(process.env.MEDIA_PORT, '127.0.0.1')
+      .listen(process.env.MEDIA_PORT)
     console.log(`Server running at http://127.0.0.1:${process.env.MEDIA_PORT}`)
   }
 

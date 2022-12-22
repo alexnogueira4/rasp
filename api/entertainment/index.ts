@@ -25,9 +25,12 @@ export default class Entertainment {
     if (this.device) {
 
       const channelGrid = await this.getChannelGrid(this.device.friendlyName)
+      if(!channelGrid) {
+        console.log('grid not found')
+        return false;
+      }
       let media;
-
-      if (channelGrid && channelGrid.file) {
+      if (channelGrid.file) {
         media = isUrl(channelGrid.file) ? channelGrid.file : process.env.MEDIA_PATH + channelGrid.file
       }
 

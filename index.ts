@@ -1,8 +1,13 @@
 import "./config/env"
-import Client from './clients/chromecast/client'
 import Database from './config/database'
 import Entertainment from './api/entertainment'
-console.log(new Entertainment())
+
+const database = new Database();
+(async () => {
+  await database.connect()
+  new Entertainment({connection: database.connection})
+})()
+// console.log(new Entertainment())
 // var teste = new Client()
 
 // //   var mediaURL = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/big_buck_bunny_1080p.mp4';

@@ -17,7 +17,11 @@ export default class Entertainment {
   onDevice() {
     this.client.on('device', ( device )=>{
       this.device = device
-      this.playMedia()
+      try {
+        this.playMedia()
+      } catch (error) {
+        console.log(error)
+      }
     })
   }
   
@@ -26,8 +30,7 @@ export default class Entertainment {
 
       const channelGrid = await this.getChannelGrid(this.device.friendlyName)
       if(!channelGrid) {
-        console.log('grid not found')
-        return false;
+        throw 'grid not found'
       }
       let media;
       if (channelGrid.file) {

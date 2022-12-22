@@ -46,8 +46,8 @@ export default class Entertainment {
         //   console.log("===",a)
         // })
       }
-      return true
     }
+    return true
   }
 
   async getChannelGrid(channel) {

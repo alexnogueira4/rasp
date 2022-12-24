@@ -1,3 +1,15 @@
+const DAYS_OF_WEEK = {
+  weekdays: [1,2,3,4,5],
+  saturday: [6],
+  sunday: [0]
+};
+
+const DAYS_FROM_DB = {
+  weekdays: 1,
+  saturday: 2,
+  sunday: 3
+}
+
 export function getDateTime() {
     const date = new Date();
 
@@ -43,6 +55,19 @@ export function isUrl(string) {
   } catch (err) {
     return false;
   }
+}
+
+export function getDay() {
+  let dayToReturn;
+  let currentDay = new Date().getDay()
+  Object.keys(DAYS_OF_WEEK).forEach(async (key, index) => {
+    const daysOfWeek = DAYS_OF_WEEK[key];
+
+    if (daysOfWeek.includes(currentDay)) {
+      dayToReturn = DAYS_FROM_DB[key]
+    }
+  });
+  return dayToReturn;
 }
 
 export default {}

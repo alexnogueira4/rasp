@@ -1,16 +1,10 @@
-// const http = require('http')
 const EventEmitter = require('events')
-// const Ssdp = require('node-ssdp').Client
 const mdns = require('multicast-dns')
-// const parseString = require('xml2js').parseString
 const txt = require('dns-txt')()
-// const console.log = require('console.log')('chromecast-api')
 const Device = require('./device')
 
 const findCast = require('./find')
-/**
-* Chromecast client
-*/
+
 class Client extends EventEmitter {
   constructor () {
     super()
@@ -35,7 +29,7 @@ class Client extends EventEmitter {
     let _this = this;
     findCast(function(err, service) {
       if (err) {
-        console.log('Nao encontrou chromecast, resetando...')
+        console.log('Nao encontrou nenhum chromecast, resetando...')
         _this._devices = {};
         _this.devices = [];
         _this._triggerMDNS()
@@ -55,6 +49,13 @@ class Client extends EventEmitter {
       friendlyName: device.name,
       host: device.host
     })
+    newDevice.on('status', status=>{
+      this.emit('status', {status, device: newDevice})
+    })
+
+    newDevice.on('error', error=>{
+      this.emit('error', error)
+    })
 
     // Add for public storage
     this.devices.push(newDevice)
@@ -64,6 +65,7 @@ class Client extends EventEmitter {
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
   async getDevices() {
 
     if (this.timesTried > 23) {

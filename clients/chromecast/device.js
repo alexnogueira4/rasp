@@ -44,9 +44,8 @@ class Device extends EventEmitter {
       this.client.close()
     })
 
-    this.client.on('status', (err, aaa) => {
-      console.log('onStatus: %s', err)
-      console.log('onStatus2: %s', aaa)
+    this.client.on('status', (status) => {
+      console.log('onStatus: %s', status)
       // this.client.close()
     })
 
@@ -114,7 +113,7 @@ class Device extends EventEmitter {
     this.player = player
 
     this.player.on('status', (status) => {
-      debug('PlayerState = %s', status.playerState)
+      debug(`PlayerState: ${this.friendlyName} = `, status.playerState)
       this.emit('status', status)
 
       // Emit 'finished'

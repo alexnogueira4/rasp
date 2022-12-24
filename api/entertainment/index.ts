@@ -64,8 +64,8 @@ export default class Entertainment {
       media = scheduleGrid.file;
       
       if (!isUrl(media)) {
-        media = `${process.env.SERVER_IP}/${media}`
-        // media = `http://192.168.100.24/${media}`
+        media = `${process.env.SERVER_IP}:${process.env.MEDIA_PORT}/${media}`
+        // media = `http://192.168.100.24:${process.env.MEDIA_PORT}/${media}`
       }
     }
 

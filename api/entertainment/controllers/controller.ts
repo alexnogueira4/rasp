@@ -1,7 +1,6 @@
 import IEletronics from '../model/eletronics'
 import gpio from 'rpi-gpio'
 
-
 import Client from '../../../clients/chromecast/client'
 import MediaServer from '.././mediaServer'
 import { getDateTime,
@@ -117,8 +116,6 @@ class Controller {
       return false;
     }
 
-    console.log(this.connection)
-
     const { data, error: channelError } = await this.connection
       .from('channels')
       .select()
@@ -181,11 +178,7 @@ class Controller {
         }
         console.log('\nfile ', scheduleGrid.file)
         console.log('contentName ', contentName)
-        var r = !contentName || scheduleGrid.file !== contentName
-        var s = scheduleGrid.file
-        console.log('!contentName || scheduleGrid.file !== contentName: ', r);
-        console.log('scheduleGrid.file', s)
-        console.log('SHOULD CHANGE: ', r && !!s)
+        console.log('SHOULD CHANGE: ', !!scheduleGrid.file && (!contentName || scheduleGrid.file !== contentName))
         console.log('\n')
 
         if (
@@ -210,7 +203,12 @@ class Controller {
       return `https://www.youtube.com/watch?v=${content.contentId}`;
     } else {
       let url = new URL(content.contentId);
-      return url.pathname ? url.pathname.substring(1) : ''
+      if (url.pathname) {
+        let splitedUrl = url.pathname.split('/')
+        return splitedUrl[splitedUrl.length - 1]
+      }
+      
+      return ''
     }
   }
 

@@ -1,4 +1,3 @@
-
 var server:any = null
 
 function start (app, api:any, Database:any, callback:any) {

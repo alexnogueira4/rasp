@@ -247,7 +247,7 @@ class Controller {
         fs.createReadStream(filePath).pipe(res);
       }
     } catch (error) {
-      console.log('error trying to start the server')
+      console.log('error trying to start the server', error)
     }
   }
 }

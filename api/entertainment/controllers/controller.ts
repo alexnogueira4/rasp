@@ -49,8 +49,10 @@ class Controller {
 
   async onDevice() {
     this.client.on('device', (device) => {
-      this.device[device.friendlyName] = device
-      this.startGrid()
+      if (!this.device[device.friendlyName]) {
+        this.device[device.friendlyName] = device
+        this.startGrid()
+      }
     })
     this.client.on('status', ({ status, device }) => {
       this.device[device.friendlyName].status = status
@@ -137,7 +139,7 @@ class Controller {
       return false;
     }
 
-    console.log('DAY TODAY', getDay())
+    // console.log('DAY TODAY', getDay())
     const { data: scheduleGrid, error } = await this.connection
       .from('scheduleGrid')
       .select()
@@ -158,6 +160,29 @@ class Controller {
     }
   }
 
+  async getWholeScheduleGrid(channelId) {
+    if (!channelId) {
+      console.log('no channelId provided')
+      return false;
+    }
+
+    // console.log('DAY TODAY', getDay())
+    const { data: scheduleGrid, error } = await this.connection
+      .from('scheduleGrid')
+      .select()
+      .match({
+        channel: channelId,
+        days: getDay()
+      })
+
+    if (error) {
+      console.log("getChannelGrid Error: ", error)
+      return false
+    } else {
+      return scheduleGrid;
+    }
+  }
+
   startGrid() {
     setInterval(() => {
       Object.keys(this.device).forEach(async (key, index) => {
@@ -166,9 +191,9 @@ class Controller {
         let scheduleGrid:any = {};
         let contentName = null;
         channel = await this.getChannel(device.friendlyName)
-
+        // this.getGridFromJson()
         if (channel) {
-          scheduleGrid =  await this.getScheduleGrid(channel.id)
+          scheduleGrid = await this.getScheduleGrid(channel.id)
         }
 
         const content = this.getDeviceContent(device.friendlyName) || {}
@@ -177,6 +202,7 @@ class Controller {
           contentName = this.getContentFromUrl(content)
         }
         console.log('\nfile ', scheduleGrid.file)
+        console.log('content ', content)
         console.log('contentName ', contentName)
         console.log('SHOULD CHANGE: ', !!scheduleGrid.file && (!contentName || scheduleGrid.file !== contentName))
         console.log('\n')
@@ -210,6 +236,39 @@ class Controller {
       
       return ''
     }
+  }
+
+  async getGridFromJson() {
+    let rawdata: any = fs.readFileSync('grid.json');
+    let grid = JSON.parse(rawdata);
+    console.log("GRIDDDDDD", grid)
+    const currentDay = getDay();
+    let rr = 0
+    if (grid[0]?.day != currentDay && rr == 0) {
+      console.log("DIA TA ERRADOOOOOOOOOOOO", grid[0]?.day, currentDay)
+      await this.updateGridFromJson()
+      this.getGridFromJson()
+      rr = 1
+    }
+    // console.log(grid);
+    // this.updateGridFromJson()
+  }
+
+  async updateGridFromJson() {
+    Object.keys(this.device).forEach(async (key, index) => {
+      const device = this.device[key];
+      let channel:any = {};
+      let scheduleGrid:any = {};
+      channel = await this.getChannel(device.friendlyName)
+      const wholeGrid = await this.getWholeScheduleGrid(channel.id)
+      const dateTime = {
+        "day": getDay()
+      };
+      wholeGrid.unshift(dateTime);
+      console.log("\n\n\n\nWHOLE GRID", wholeGrid)
+      const data = JSON.stringify(wholeGrid);
+      fs.writeFileSync('grid.json', data);
+    })
   }
 
   public getShow(req: any, res: any): void {

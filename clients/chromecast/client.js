@@ -103,26 +103,25 @@ class Client extends EventEmitter {
       const onEachAnswer = (a) => {
         let name
         if (a.type === 'PTR' && a.name === '_googlecast._tcp.local') {
-          console.log('DNS [PTR]: ', a.name);
           name = a.data
           if (!this._devices[name]) {
             // New device
+            console.log('DNS [PTR]: ', a.name);
             this._devices[name] = { name: null, host: null }
           }
         }
 
         name = a.name
         if (a.type === 'SRV' && this._devices[name] && !this._devices[name].host) {
-          console.log('DNS [SRV]: ', a.name);
           // Update device
           this._devices[name].host = a.data.target
           if (this._devices[name].name) {
+            console.log('DNS [SRV]: ', a.name);
             this._updateDevice(name)
           }
         }
 
         if (a.type === 'TXT' && this._devices[name] && !this._devices[name].name) {
-          console.log('DNS [TXT]: ', a.name);
 
           // Fix for array od data
           let decodedData = {}
@@ -142,6 +141,7 @@ class Client extends EventEmitter {
             // Update device
             this._devices[name].name = friendlyName
             if (this._devices[name].host) {
+              console.log('DNS [TXT]: ', a.name);
               this._updateDevice(name)
             }
           }

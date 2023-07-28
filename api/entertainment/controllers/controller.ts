@@ -33,10 +33,8 @@ class Controller {
   protected ISnapshot: any;
 
   constructor(database: any) {
-    this.connect(database)
-    // this.connection = database
     this.client = new Client()
-    // this.onDevice()
+    this.connect(database)
     // this.mediaServer = new MediaServer()
     // this.mediaServer.start();
   }
@@ -87,7 +85,7 @@ class Controller {
       console.log('no scheduleGrid provided')
     }
     if (!channel) {
-      console.log('no scheduleGrid provided')
+      console.log('no channel provided')
     }
 
     if (scheduleGrid.file) {
@@ -139,7 +137,6 @@ class Controller {
       return false;
     }
 
-    // console.log('DAY TODAY', getDay())
     const { data: scheduleGrid, error } = await this.connection
       .from('scheduleGrid')
       .select()
@@ -147,10 +144,6 @@ class Controller {
         channel: channelId,
         days: getDay()
       })
-      .lt('startTime', getDateTime())
-      .gt('endTime', getDateTime())
-      .limit(1)
-      .single()
 
     if (error) {
       console.log("getChannelGrid Error: ", error)
@@ -160,47 +153,46 @@ class Controller {
     }
   }
 
-  async getWholeScheduleGrid(channelId) {
-    if (!channelId) {
-      console.log('no channelId provided')
-      return false;
-    }
+  getScheduledMedia(scheduleGrid){
+    return scheduleGrid.find(currentMedia => {
+      if (!currentMedia.startTime || !currentMedia.endTime) return false;
 
-    // console.log('DAY TODAY', getDay())
-    const { data: scheduleGrid, error } = await this.connection
-      .from('scheduleGrid')
-      .select()
-      .match({
-        channel: channelId,
-        days: getDay()
-      })
+      const startTimeSplit = currentMedia.startTime.split(":");
+      const endTimeSplit = currentMedia.endTime.split(":");
+      let currentTime: any = new Date();
+      let startTime: any = new Date().setHours(startTimeSplit[0],startTimeSplit[1],startTimeSplit[2]);
+      let endTime: any = new Date().setHours(endTimeSplit[0],endTimeSplit[1],endTimeSplit[2]);
+      const shouldHaveStarted = currentTime > new Date(startTime);
+      const shouldHaveEnded = currentTime > new Date(endTime);
 
-    if (error) {
-      console.log("getChannelGrid Error: ", error)
-      return false
-    } else {
-      return scheduleGrid;
-    }
+      return shouldHaveStarted && !shouldHaveEnded;
+    })
   }
 
   startGrid() {
-    setInterval(() => {
+    setInterval(async () => {
       Object.keys(this.device).forEach(async (key, index) => {
         const device = this.device[key];
         let channel:any = {};
         let scheduleGrid:any = {};
         let contentName = null;
-        channel = await this.getChannel(device.friendlyName)
-        // this.getGridFromJson()
-        if (channel) {
-          scheduleGrid = await this.getScheduleGrid(channel.id)
+
+        scheduleGrid = await this.getGridFromJson(device);
+        if (!scheduleGrid) {
+          return false;
         }
+        scheduleGrid = this.getScheduledMedia(scheduleGrid);
+        if (!scheduleGrid) {
+          console.log("No media to stream right now...")
+          return false;
+        };
 
         const content = this.getDeviceContent(device.friendlyName) || {}
 
         if (content.contentId) {
           contentName = this.getContentFromUrl(content)
         }
+
         console.log('\nfile ', scheduleGrid.file)
         console.log('content ', content)
         console.log('contentName ', contentName)
@@ -221,7 +213,7 @@ class Controller {
         }
 
       });
-    }, 10000)
+    }, 5000)
   }
 
   getContentFromUrl(content) {
@@ -238,37 +230,32 @@ class Controller {
     }
   }
 
-  async getGridFromJson() {
-    let rawdata: any = fs.readFileSync('grid.json');
-    let grid = JSON.parse(rawdata);
-    console.log("GRIDDDDDD", grid)
+  async getGridFromJson(device) {
+    let rawFile: any = fs.readFileSync(device.friendlyName + '_grid.json');
+    let scheduleGrid: any = rawFile ? JSON.parse(rawFile) : null;
     const currentDay = getDay();
-    let rr = 0
-    if (grid[0]?.day != currentDay && rr == 0) {
-      console.log("DIA TA ERRADOOOOOOOOOOOO", grid[0]?.day, currentDay)
-      await this.updateGridFromJson()
-      this.getGridFromJson()
-      rr = 1
-    }
-    // console.log(grid);
-    // this.updateGridFromJson()
-  }
 
-  async updateGridFromJson() {
-    Object.keys(this.device).forEach(async (key, index) => {
-      const device = this.device[key];
-      let channel:any = {};
-      let scheduleGrid:any = {};
-      channel = await this.getChannel(device.friendlyName)
-      const wholeGrid = await this.getWholeScheduleGrid(channel.id)
-      const dateTime = {
-        "day": getDay()
-      };
-      wholeGrid.unshift(dateTime);
-      console.log("\n\n\n\nWHOLE GRID", wholeGrid)
-      const data = JSON.stringify(wholeGrid);
-      fs.writeFileSync('grid.json', data);
-    })
+    if (!scheduleGrid || scheduleGrid[0]?.day != currentDay) {
+      await this.updateGridFromJson(device)
+      return null;
+    } else {
+      return scheduleGrid;
+    }
+  } 
+
+  async updateGridFromJson(device) {
+    console.log(`Updating grid for ${device.friendlyName}`);
+
+    let channel:any = await this.getChannel(device.friendlyName)
+    const scheduleGrid = await this.getScheduleGrid(channel.id)
+    const dateTime = {
+      "day": getDay()
+    };
+    scheduleGrid.unshift(dateTime);
+    const data = JSON.stringify(scheduleGrid);
+    fs.writeFile(device.friendlyName + '_grid.json', data, {}, (error)=>{
+      if (error) console.log("updateGridFromJson error: ", error)
+    });
   }
 
   public getShow(req: any, res: any): void {

@@ -231,8 +231,14 @@ class Controller {
   }
 
   async getGridFromJson(device) {
-    let rawFile: any = fs.readFileSync(device.friendlyName + '_grid.json');
-    let scheduleGrid: any = rawFile ? JSON.parse(rawFile) : null;
+    let rawFile: any;
+    let scheduleGrid: any;
+    try {
+      rawFile = fs.readFileSync(device.friendlyName + '_grid.json');
+      scheduleGrid = rawFile ? JSON.parse(rawFile) : null;
+    } catch (error) {
+      console.log("getGridFromJson", error)
+    }
     const currentDay = getDay();
 
     if (!scheduleGrid || scheduleGrid[0]?.day != currentDay) {

@@ -1,6 +1,6 @@
 import IEletronics from '../model/eletronics'
 import gpio from 'rpi-gpio'
-
+import shelljs from 'shelljs';
 import Client from '../../../clients/chromecast/client'
 import MediaServer from '.././mediaServer'
 import { getDateTime,
@@ -43,6 +43,10 @@ class Controller {
     await database.connect()
     this.connection = database.connection
     this.onDevice()
+  }
+
+  private async serverRestart() {
+    shelljs.exec(`pm2 restart rasp`, { async: true, silent: false });
   }
 
   async onDevice() {
@@ -100,12 +104,17 @@ class Controller {
     const timeDiff = diffTime(scheduleGrid.startTime, getDateTime())
 
     if (media) {
-      device.play(media, { startTime: timeToSeconds(timeDiff) }, function (err) {
-        if (err) {
-          console.log("err", err)
-        }
-        console.log('Playing in your chromecast')
-      })
+      try {
+        device.play(media, { startTime: timeToSeconds(timeDiff) }, function (err) {
+          if (err) {
+            console.log("err", err)
+          }
+          console.log('Playing in your chromecast')
+        })
+      } catch (error) {
+        console.log("RASP: ", error);
+        this.serverRestart()
+      }
     }
     return true
   }

@@ -120,6 +120,12 @@ class Controller {
   }
 
   async getChannel(channel) {
+    return {
+      id: 1,
+      name: 'Globo',
+      channel: 36,
+      channelName: 'channel36'
+    }
     if (!channel) {
       console.log('no channel provided')
       return false;
@@ -128,7 +134,8 @@ class Controller {
     const { data, error: channelError } = await this.connection
       .from('channels')
       .select()
-      .eq('channelName', channel)
+      .eq('channelName', 'channel36')
+      // .eq('channelName', channel)
       .limit(1)
       .single()
 
@@ -262,6 +269,7 @@ class Controller {
     console.log(`Updating grid for ${device.friendlyName}`);
 
     let channel:any = await this.getChannel(device.friendlyName)
+    console.log("->", channel)
     const scheduleGrid = await this.getScheduleGrid(channel.id)
     const dateTime = {
       "day": getDay()

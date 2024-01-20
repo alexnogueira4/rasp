@@ -1,7 +1,7 @@
 import Controller from './controllers/controller'
 import Routes from './routes/routes'
 
-export class Entertainment {
+export class Commando {
 	protected App: any;
 	protected database: any;
 	protected controller:Controller;

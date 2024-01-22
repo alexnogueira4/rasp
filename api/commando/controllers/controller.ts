@@ -25,16 +25,20 @@ class Controller {
   }
 
   private async serverRunCommando(commando: CommandoEnum) {
-    shelljs.exec(`pm2 ${commando} rasp`, { async: true, silent: false });
+    await shelljs.exec(`pm2 ${commando} rasp`, { async: true, silent: false });
   }
 
-  public runCommando(req: any, res: any): void {
+  public async runCommando(req: any, res: any) {
     const { commando } = req.params
 
     try {
-      this.serverRunCommando(commando);
+      await this.serverRunCommando(commando);
+      res.json({
+        message: "Restarting server..."
+      })
     } catch (error) {
       console.log(`Error trying to run commando the server: ${commando}`, error)
+      throw error
     }
   }
 }
